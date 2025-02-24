@@ -1,0 +1,50 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Produtos Cadastrados{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-gray-800">Produtos Cadastrados</h1>
+
+    <!-- Tabela de Produtos -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Lista de Produtos</h6>
+            <a href="{% url 'criar_produto' %}" class="btn btn-primary">+</a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Valor Unitário</th>
+                            <th>Quantidade em Estoque</th>
+                            <th>Valor Total em Estoque</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for produto in produtos %}
+                        <tr>
+                            <td>{{ produto.nome }}</td>
+                            <td>R$ {{ produto.valor_unitario }}</td>
+                            <td>{{ produto.qtd_estoque_inicial }}</td>
+                            <td>R$ {{ produto.valor_estoque }}</td>
+                            <td>
+                                <a href="" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
+                                <form action="{% url 'excluir_produto' produto.id %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-circle btn-sm"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Registrar Retirada{% endblock %}
+
+{% block content %}
+<h1 class="mt-4">Retiradas</h1>
+
+<!-- Formulário de retirada -->
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-box-open"></i>
+        Registrar Retirada
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Registrar</button>
+        </form>
+    </div>
+</div>
+
+<!-- Tabela de retiradas -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-list"></i>
+        Retiradas Recentes
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for retirada in retiradas %}
+                <tr>
+                    <td>{{ retirada.produto.nome }}</td>
+                    <td>{{ retirada.quantidade }}</td>
+                    <td>{{ retirada.data_retirada|date:"d/m/Y H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="text-center">Nenhuma retirada registrada.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Paginação -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if retiradas.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="Primeira">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ retiradas.previous_page_number }}" aria-label="Anterior">
+                        <span aria-hidden="true">&lsaquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in retiradas.paginator.page_range %}
+                {% if retiradas.number == num %}
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% elif num > retiradas.number|add:'-3' and num < retiradas.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                {% if retiradas.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ retiradas.next_page_number }}" aria-label="Próxima">
+                        <span aria-hidden="true">&rsaquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ retiradas.paginator.num_pages }}" aria-label="Última">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}

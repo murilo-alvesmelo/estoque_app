@@ -1,0 +1,119 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{% block title %}Base{% endblock %}</title>
+
+    {% load static %}
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'home' %}">
+                <div class="sidebar-brand-icon">
+                    <i class="fas fa-globe" style="color: #ffffff;"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">Meu Bar</div>
+            </a>
+        
+            <hr class="sidebar-divider my-0">
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="true" aria-controls="collapseLayouts">
+                    <i class="fas fa-regular fa-dolly"></i>
+                    <span>Estoque</span>
+                </a>
+                <div id="collapseLayouts" class="collapse" aria-labelledby="headingLayouts" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="{% url 'listar_produtos' %}">Produtos</a>
+                        <a class="collapse-item" href="{% url 'registrar_entrada' %}">Entradas</a>
+                        <a class="collapse-item" href="{% url 'registrar_retirada' %}">Retiradas</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <form method="get" action="" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control bg-light border-0 small" placeholder="PESQUISAR PRODUTO" aria-label="Search">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>              
+
+                    <ul class="navbar-nav ml-auto">
+                    </ul>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Logout</span>
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="container-fluid">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>GM Ventures</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+<!-- JQuery -->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap Bundle JS -->
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- jQuery Easing -->
+<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<!-- SB Admin 2 JS -->
+<script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+
+<!-- Page level plugins -->
+<script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+
+<!-- Page level custom scripts -->
+<script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
+<script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>
+<script src="{% static 'js/demo/chart-bar-demo.js' %}"></script>
+
+    {% block extra_js %}
+    {% endblock %}
+
+</body>
+</html>

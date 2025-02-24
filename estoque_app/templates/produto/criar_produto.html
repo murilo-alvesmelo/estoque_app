@@ -1,0 +1,25 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Adicionar Produto{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-gray-800">Adicionar Novo Produto</h1>
+
+    <!-- Formulário -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Cadastro de Produto</h6>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Salvar Produto</button>
+                <a href="{% url 'listar_produtos' %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

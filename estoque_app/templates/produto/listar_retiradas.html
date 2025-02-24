@@ -1,0 +1,26 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Lista de Retiradas{% endblock %}
+
+{% block content %}
+<h1 class="mt-4">Lista de Retiradas</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Data</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for retirada in retiradas %}
+        <tr>
+            <td>{{ retirada.produto.nome }}</td>
+            <td>{{ retirada.quantidade }}</td>
+            <td>{{ retirada.data_retirada|date:"d/m/Y H:i" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
