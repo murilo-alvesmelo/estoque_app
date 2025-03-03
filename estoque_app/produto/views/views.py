@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from ..models.models import Produto, Retirada, Entrada
@@ -7,48 +8,50 @@ from ..forms.formProduto import ProdutoForm, RetiradaForm, EntradaForm
 def dashboard(request):
     return render(request, 'produto/dashboard.html')
 
+@login_required
 def listar_produtos(request):
     produtos = Produto.objects.all()
     return render(request, 'produto/listar_produtos.html', {'produtos': produtos})
 
+@login_required
 def criar_produto(request):
     if request.method == 'POST':
         form = ProdutoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('listar_produtos')  # Redireciona para a lista de produtos após criar
+            return redirect('listar_produtos')  
     else:
         form = ProdutoForm()
     
     return render(request, 'produto/criar_produto.html', {'form': form})
 
+@login_required
 def excluir_produto(request, id):
     produto = Produto.objects.get(id=id)
     produto.delete()
     return redirect('listar_produtos') 
 
+@login_required
 def registrar_retirada(request):
     if request.method == 'POST':
         form = RetiradaForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('registrar_retirada')  # Redireciona para a mesma página após registrar
-    else:
+            return redirect('registrar_retirada') 
         form = RetiradaForm()
 
-    # Busca todas as retiradas e ordena por data
     retiradas_list = Retirada.objects.select_related('produto').order_by('-data_retirada')
 
-    # Configura o Paginator (10 retiradas por página)
     paginator = Paginator(retiradas_list, 10)
-    page_number = request.GET.get('page')  # Pega o número da página da URL
-    retiradas = paginator.get_page(page_number)  # Obtém os objetos da página atual
+    page_number = request.GET.get('page')  
+    retiradas = paginator.get_page(page_number) 
 
     return render(request, 'produto/registrar_retirada.html', {
         'form': form,
         'retiradas': retiradas,
     })
 
+@login_required
 def registrar_entrada(request):
     if request.method == 'POST':
         form = EntradaForm(request.POST)
@@ -61,9 +64,8 @@ def registrar_entrada(request):
     else:
         form = EntradaForm()
 
-    # Consulta todas as entradas para exibir na tabela
     entradas = Entrada.objects.order_by('-data_entrada')
-    paginator = Paginator(entradas, 10)  # Paginação: 10 entradas por página
+    paginator = Paginator(entradas, 10)  
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
