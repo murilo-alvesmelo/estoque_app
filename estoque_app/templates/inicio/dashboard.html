@@ -6,33 +6,82 @@
 <div class="container-fluid">
     <!-- Título -->
     <h1 class="h3 mb-4 text-gray-800">Bem-vindo ao Controle de Estoque</h1>
+
+    <!-- Cards com Indicadores -->
     <div class="row">
-        <!-- Gráfico de Barras: Quantidade de Produtos -->
-        <div class="col-xl-6 col-lg-6">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Quantidade de Produtos no Estoque</h6>
-                </div>
+        <!-- Receita Total -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
-                    <canvas id="myAreaChart"></canvas>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Faturamento da Semana</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">R$ {{ receita_semana|floatformat:2 }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Gráfico de Pizza: Valor Total do Estoque -->
-        <div class="col-xl-6 col-lg-6">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Valor Total por Produto</h6>
-                </div>
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
-                    <canvas id="myBarChart"></canvas>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Valor Total do Estoque</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">R$ {{ valor_total_estoque|floatformat:2 }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-boxes fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Produtos com Estoque Baixo</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ produtos_baixo_estoque|length }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tabela de Movimentações Recentes -->
+    <div class="row">
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Receita Semanal ({{ inicio_semana }} a {{ fim_semana }})</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="receitaSemanalChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Categorias Mais Vendidas (R$)</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="categoriasVendasChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-xl-12 col-lg-12">
             <div class="card shadow mb-4">
@@ -45,8 +94,8 @@
                             <thead>
                                 <tr>
                                     <th>Produto</th>
-                                    <th>Tipo</th>
                                     <th>Quantidade</th>
+                                    <th>Valor da Venda</th>
                                     <th>Data</th>
                                 </tr>
                             </thead>
@@ -54,13 +103,44 @@
                                 {% for movimentacao in movimentacoes %}
                                 <tr>
                                     <td>{{ movimentacao.produto.nome }}</td>
-                                    <td>{{ movimentacao.tipo }}</td>
                                     <td>{{ movimentacao.quantidade }}</td>
-                                    <td>{{ movimentacao.data_retirada }}</td>
+                                    <td>R$ {{ movimentacao.valor_venda|floatformat:2 }}</td>
+                                    <td>{{ movimentacao.data_venda|date:"d/m/Y H:i" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">Nenhuma movimentação recente.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- Paginação -->
+                    <div class="d-flex justify-content-center mt-3">
+                        <ul class="pagination">
+                            {% if movimentacoes.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1">&laquo; Primeira</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ movimentacoes.previous_page_number }}">Anterior</a>
+                                </li>
+                            {% endif %}
+
+                            <li class="page-item active">
+                                <a class="page-link" href="#">Página {{ movimentacoes.number }} de {{ movimentacoes.paginator.num_pages }}</a>
+                            </li>
+
+                            {% if movimentacoes.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ movimentacoes.next_page_number }}">Próxima</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ movimentacoes.paginator.num_pages }}">Última &raquo;</a>
+                                </li>
+                            {% endif %}
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -68,4 +148,52 @@
     </div>
 </div>
 
+<!-- Script para o gráfico de receita semanal -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var ctx1 = document.getElementById('receitaSemanalChart').getContext('2d');
+        var labelsReceita = JSON.parse('{{ receita_por_dia_labels|escapejs }}');
+        var valoresReceita = JSON.parse('{{ receita_por_dia_values|escapejs }}');
+
+        var receitaSemanalChart = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: labelsReceita,
+                datasets: [{
+                    label: 'Receita (R$)',
+                    data: valoresReceita,
+                    backgroundColor: '#4E73DFCC',
+                    borderColor: '#4E73DF',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        var ctx2 = document.getElementById('categoriasVendasChart').getContext('2d');
+        var categorias = JSON.parse('{{ categorias_labels_vendas|escapejs }}');
+        var valoresCategorias = JSON.parse('{{ categorias_values_vendas|escapejs }}');
+
+        var categoriasVendasChart = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: categorias,
+                datasets: [{
+                    label: 'Receita por Categoria (R$)',
+                    data: valoresCategorias,
+                    backgroundColor: ['#4E73DFCC', '#1CC88ACC', '#F6C23ECC', '#E74A3BCC'],
+                    borderColor: ['#4E73DF', '#1CC88A', '#F6C23E', '#E74A3B'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    });
+</script>
 {% endblock %}
