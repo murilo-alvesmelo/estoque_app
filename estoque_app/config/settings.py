@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+
+load_dotenv() 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'produto',
+    'vendas',
+    'inicio',
 ]
 
 MIDDLEWARE = [
@@ -70,17 +76,32 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+LOGIN_URL = "/login/"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+APP_MODE = os.getenv('APP_MODE', 'development')
 
+# 🔹 Configuração do banco de dados
+if APP_MODE == 'production':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('SUPABASE_DB_NAME'),
+            'USER': os.getenv('SUPABASE_DB_USER'),
+            'PASSWORD': os.getenv('SUPABASE_DB_PASSWORD'),
+            'HOST': os.getenv('SUPABASE_DB_HOST'),
+            'PORT': os.getenv('SUPABASE_DB_PORT', '5432'),
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
