@@ -37,8 +37,7 @@
                 <div id="collapseLayouts" class="collapse" aria-labelledby="headingLayouts" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{% url 'listar_produtos' %}">Produtos</a>
-                        <a class="collapse-item" href="{% url 'registrar_entrada' %}">Entradas</a>
-                        <a class="collapse-item" href="{% url 'registrar_retirada' %}">Retiradas</a>
+                        <a class="collapse-item" href="{% url 'listar_vendas' %}">Vendas</a>
                     </div>
                 </div>
             </li>
@@ -68,7 +67,7 @@
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'logout' %}">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Logout</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Sair</span>
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                             </a>
                         </li>
